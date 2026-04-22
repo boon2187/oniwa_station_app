@@ -46,3 +46,6 @@ app.*.map.json
 
 # Claude Code
 /CLAUDE.md
+
+# Claude Codeからの宿題・要検討事項
+/issues_to_consider.md
