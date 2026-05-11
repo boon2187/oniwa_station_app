@@ -1,5 +1,5 @@
 name: oniwa_station_app
-description: "Time table app for Oniwa station"
+description: "大庭駅専用時刻表 - 大庭駅⇔松本駅(アルピコ交通上高地線)のピンポイント時刻表アプリ"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -34,6 +34,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  geolocator: ^14.0.2
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
