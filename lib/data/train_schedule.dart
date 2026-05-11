@@ -2,6 +2,8 @@
 ///
 /// データソース: timeTable.ods
 /// 時刻形式: 'HH:mm' (24時間表記)
+library;
+
 
 class TrainSchedule {
   /// 出発時刻 (HH:mm)
