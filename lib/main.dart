@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'data/stations.dart';
-import 'domain/target_station_resolver.dart';
-import 'service/location_service.dart';
+import 'screen/arrive_at_matsumoto_screen.dart';
+import 'screen/arrive_at_oniwa_screen.dart';
+import 'screen/current_status_screen.dart';
 
 void main() {
   runApp(const OniwaStationApp());
@@ -32,29 +32,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _locationService = LocationService();
-  Station? _targetStation;
-  bool _loading = true;
-  bool _locationAcquired = false;
+  int _currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _resolve();
-  }
-
-  Future<void> _resolve() async {
-    final position = await _locationService.getCurrentPosition();
-    if (!mounted) return;
-    setState(() {
-      _targetStation = resolveTargetStation(
-        latitude: position?.latitude,
-        longitude: position?.longitude,
-      );
-      _locationAcquired = position != null;
-      _loading = false;
-    });
-  }
+  static const _screens = [
+    CurrentStatusScreen(),
+    ArriveAtMatsumotoScreen(),
+    ArriveAtOniwaScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -63,30 +47,15 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('大庭駅専用時刻表'),
       ),
-      body: Center(
-        child: _loading
-            ? const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('位置情報を取得中...'),
-                ],
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '対象駅: ${_targetStation!.name}',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    _locationAcquired ? '位置情報: 取得成功' : '位置情報: 取得不可',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (i) => setState(() => _currentIndex = i),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.access_time), label: '現在'),
+          NavigationDestination(icon: Icon(Icons.flag), label: '松本着'),
+          NavigationDestination(icon: Icon(Icons.home), label: '大庭着'),
+        ],
       ),
     );
   }
