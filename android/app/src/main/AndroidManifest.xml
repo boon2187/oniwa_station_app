@@ -4,7 +4,7 @@
     <application
         android:label="大庭駅専用時刻表"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

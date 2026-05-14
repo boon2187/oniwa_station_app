@@ -49,3 +49,12 @@ app.*.map.json
 
 # Claude Codeからの宿題・要検討事項
 /issues_to_consider.md
+
+# キャラクター画像を含むアセットと生成物 (ローカルのみ保持)
+# 再生成: dart run flutter_launcher_icons && dart run flutter_native_splash:create
+/assets/
+/android/app/src/main/res/mipmap-*/launcher_icon.png
+/android/app/src/main/res/drawable*/ic_launcher_foreground.png
+/android/app/src/main/res/drawable*/splash.png
+/android/app/src/main/res/drawable*/android12splash.png
+/android/app/src/main/res/drawable*/background.png
