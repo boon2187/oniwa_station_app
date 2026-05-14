@@ -90,4 +90,39 @@ void main() {
       expect(findTrainAfter(_fixture, stranger), isNull);
     });
   });
+
+  group('findTrainBefore', () {
+    test('中盤の電車から前の電車を返す', () {
+      final result = findTrainBefore(_fixture, _fixture[2]);
+      expect(result?.departure, '07:00');
+    });
+
+    test('始発の前は null', () {
+      final result = findTrainBefore(_fixture, _fixture.first);
+      expect(result, isNull);
+    });
+
+    test('リストに存在しない電車を渡したら null', () {
+      const stranger = TrainSchedule(departure: '12:34', arrival: '12:40');
+      expect(findTrainBefore(_fixture, stranger), isNull);
+    });
+  });
+
+  group('isBoardable', () {
+    test('発車時刻ちょうどは true(間に合う)', () {
+      expect(isBoardable(_fixture[1], _t(7, 0)), isTrue);
+    });
+
+    test('発車時刻の1分後は false(乗れない)', () {
+      expect(isBoardable(_fixture[1], _t(7, 1)), isFalse);
+    });
+
+    test('大幅な未来の現在時刻なら false', () {
+      expect(isBoardable(_fixture[0], _t(20, 0)), isFalse);
+    });
+
+    test('現在時刻が発車時刻より十分前なら true', () {
+      expect(isBoardable(_fixture[3], _t(5, 0)), isTrue);
+    });
+  });
 }

@@ -72,6 +72,24 @@ class CurrentStatusScreenState extends State<CurrentStatusScreen> {
     return findTrainAfter(_scheduleFor(target), current) != null;
   }
 
+  void _showPrevTrain() {
+    final target = _targetStation;
+    final current = _currentTrain;
+    if (target == null || current == null) return;
+    final prev = findTrainBefore(_scheduleFor(target), current);
+    if (prev == null) return;
+    setState(() => _currentTrain = prev);
+  }
+
+  bool _hasPrevTrain() {
+    final target = _targetStation;
+    final current = _currentTrain;
+    if (target == null || current == null) return false;
+    final prev = findTrainBefore(_scheduleFor(target), current);
+    if (prev == null) return false;
+    return isBoardable(prev, DateTime.now());
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -123,6 +141,12 @@ class CurrentStatusScreenState extends State<CurrentStatusScreen> {
                     onPressed: _hasNextTrain() ? _showNextTrain : null,
                     icon: const Icon(Icons.arrow_forward),
                     label: const Text('次の電車'),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton.icon(
+                    onPressed: _hasPrevTrain() ? _showPrevTrain : null,
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Text('前の電車'),
                   ),
                 ],
               ],

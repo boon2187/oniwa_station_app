@@ -48,3 +48,20 @@ TrainSchedule? findTrainAfter(
   if (index < 0 || index >= schedule.length - 1) return null;
   return schedule[index + 1];
 }
+
+/// [current] の前の電車を返す。始発またはリスト外の電車を渡された場合は null。
+/// 同一性は発車時刻で判定する。
+TrainSchedule? findTrainBefore(
+  List<TrainSchedule> schedule,
+  TrainSchedule current,
+) {
+  final index = schedule.indexWhere((t) => t.departure == current.departure);
+  if (index <= 0) return null;
+  return schedule[index - 1];
+}
+
+/// [now] 時点で [train] にまだ乗れる(発車していない)なら true。
+/// 発車時刻ちょうどはまだ間に合う扱い。
+bool isBoardable(TrainSchedule train, DateTime now) {
+  return _toMinutes(train.departure) >= _dateTimeToMinutes(now);
+}
