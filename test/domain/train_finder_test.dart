@@ -125,4 +125,50 @@ void main() {
       expect(isBoardable(_fixture[3], _t(5, 0)), isTrue);
     });
   });
+
+  group('roundUpToHalfHour', () {
+    test('00分ちょうどはそのまま', () {
+      expect(roundUpToHalfHour(_t(15, 0)), _t(15, 0));
+    });
+
+    test('30分ちょうどはそのまま', () {
+      expect(roundUpToHalfHour(_t(15, 30)), _t(15, 30));
+    });
+
+    test('30分未満は同じ時の30分に切り上げ', () {
+      expect(roundUpToHalfHour(_t(15, 10)), _t(15, 30));
+    });
+
+    test('30分超過は翌時の00分に切り上げ', () {
+      expect(roundUpToHalfHour(_t(15, 37)), _t(16, 0));
+    });
+
+    test('23:31以降は翌日00:00に繰り上がる', () {
+      final result = roundUpToHalfHour(DateTime(2026, 5, 11, 23, 31));
+      expect(result, DateTime(2026, 5, 12, 0, 0));
+    });
+
+    test('秒は捨てる(15:00:45 → 15:00)', () {
+      final result = roundUpToHalfHour(DateTime(2026, 5, 11, 15, 0, 45));
+      expect(result, _t(15, 0));
+    });
+  });
+
+  group('isAfterLastTrain', () {
+    test('最終発車時刻ちょうどは false', () {
+      expect(isAfterLastTrain(_fixture, _t(20, 0)), isFalse);
+    });
+
+    test('最終発車時刻の1分後は true', () {
+      expect(isAfterLastTrain(_fixture, _t(20, 1)), isTrue);
+    });
+
+    test('早朝(始発前)は false', () {
+      expect(isAfterLastTrain(_fixture, _t(5, 0)), isFalse);
+    });
+
+    test('空配列は true', () {
+      expect(isAfterLastTrain(const [], _t(10, 0)), isTrue);
+    });
+  });
 }

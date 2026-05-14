@@ -65,3 +65,25 @@ TrainSchedule? findTrainBefore(
 bool isBoardable(TrainSchedule train, DateTime now) {
   return _toMinutes(train.departure) >= _dateTimeToMinutes(now);
 }
+
+/// [now] 以後で最も近い 00 分または 30 分の時刻を返す。
+/// ちょうど 00 分 / 30 分の場合は [now] と同じ時刻(秒以下は切り捨て)。
+/// 例: 15:37 → 16:00、15:10 → 15:30、15:00 → 15:00、23:31 → 翌日 00:00
+DateTime roundUpToHalfHour(DateTime now) {
+  if (now.minute == 0 || now.minute == 30) {
+    return DateTime(now.year, now.month, now.day, now.hour, now.minute);
+  }
+  if (now.minute < 30) {
+    return DateTime(now.year, now.month, now.day, now.hour, 30);
+  }
+  final next = now.add(const Duration(hours: 1));
+  return DateTime(next.year, next.month, next.day, next.hour, 0);
+}
+
+/// [now] 時点で、[schedule] の最終発車時刻を超えていれば true(本日の運行は終了)。
+/// 最終発車時刻ちょうどはまだ false。空配列は true(=表示する電車なし)。
+bool isAfterLastTrain(List<TrainSchedule> schedule, DateTime now) {
+  if (schedule.isEmpty) return true;
+  final lastMin = _toMinutes(schedule.last.departure);
+  return _dateTimeToMinutes(now) > lastMin;
+}
