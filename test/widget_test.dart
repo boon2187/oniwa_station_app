@@ -8,7 +8,7 @@ void main() {
   ) async {
     await tester.pumpWidget(const OniwaStationApp());
 
-    expect(find.text('大庭駅専用時刻表'), findsWidgets);
+    expect(find.text('ファミリー時刻表'), findsWidgets);
     expect(find.text('現在'), findsOneWidget);
     expect(find.text('松本着'), findsOneWidget);
     expect(find.text('大庭着'), findsOneWidget);

@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
-        android:label="大庭駅専用時刻表"
+        android:label="ファミリー時刻表"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
