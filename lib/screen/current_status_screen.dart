@@ -10,10 +10,10 @@ class CurrentStatusScreen extends StatefulWidget {
   const CurrentStatusScreen({super.key});
 
   @override
-  State<CurrentStatusScreen> createState() => _CurrentStatusScreenState();
+  State<CurrentStatusScreen> createState() => CurrentStatusScreenState();
 }
 
-class _CurrentStatusScreenState extends State<CurrentStatusScreen> {
+class CurrentStatusScreenState extends State<CurrentStatusScreen> {
   final _locationService = LocationService();
   bool _loading = true;
   Station? _targetStation;
@@ -23,6 +23,11 @@ class _CurrentStatusScreenState extends State<CurrentStatusScreen> {
   @override
   void initState() {
     super.initState();
+    _initialize();
+  }
+
+  void refresh() {
+    setState(() => _loading = true);
     _initialize();
   }
 

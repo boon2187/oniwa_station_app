@@ -31,14 +31,42 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int _currentIndex = 0;
+  final GlobalKey<CurrentStatusScreenState> _currentStatusKey =
+      GlobalKey<CurrentStatusScreenState>();
 
-  static const _screens = [
-    CurrentStatusScreen(),
-    ArriveAtMatsumotoScreen(),
-    ArriveAtOniwaScreen(),
+  late final List<Widget> _screens = [
+    CurrentStatusScreen(key: _currentStatusKey),
+    const ArriveAtMatsumotoScreen(),
+    const ArriveAtOniwaScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _currentStatusKey.currentState?.refresh();
+    }
+  }
+
+  void _onDestinationSelected(int i) {
+    setState(() => _currentIndex = i);
+    if (i == 0) {
+      _currentStatusKey.currentState?.refresh();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +78,7 @@ class _HomePageState extends State<HomePage> {
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
-        onDestinationSelected: (i) => setState(() => _currentIndex = i),
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.access_time), label: '現在'),
           NavigationDestination(icon: Icon(Icons.flag), label: '松本着'),
