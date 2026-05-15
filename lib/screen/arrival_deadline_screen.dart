@@ -120,11 +120,11 @@ class _ArrivalDeadlineScreenState extends State<ArrivalDeadlineScreen> {
       },
     );
     if (result == null || !mounted) return;
-    final now = DateTime.now();
+    final today = DateTime.now();
     final deadline = DateTime(
-      now.year,
-      now.month,
-      now.day,
+      today.year,
+      today.month,
+      today.day,
       result.hour,
       result.minute,
     );
@@ -132,7 +132,7 @@ class _ArrivalDeadlineScreenState extends State<ArrivalDeadlineScreen> {
       _selectedHour = result.hour;
       _selectedMinute = result.minute;
       _hasSet = true;
-      _currentTrain = findLatestArrivalBy(widget.schedule, deadline, now);
+      _currentTrain = findLatestArrivalBy(widget.schedule, deadline);
     });
   }
 
@@ -161,9 +161,7 @@ class _ArrivalDeadlineScreenState extends State<ArrivalDeadlineScreen> {
   bool _hasPrevTrain() {
     final current = _currentTrain;
     if (current == null) return false;
-    final prev = findTrainBefore(widget.schedule, current);
-    if (prev == null) return false;
-    return isBoardable(prev, DateTime.now());
+    return findTrainBefore(widget.schedule, current) != null;
   }
 
   String _formatTime(int hour, int minute) =>
@@ -172,17 +170,6 @@ class _ArrivalDeadlineScreenState extends State<ArrivalDeadlineScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final now = DateTime.now();
-
-    if (isAfterLastTrain(widget.schedule, now)) {
-      return Center(
-        child: Text(
-          '本日の運行は終了しました',
-          style: theme.textTheme.headlineSmall,
-        ),
-      );
-    }
-
     final current = _currentTrain;
     final timeLabel =
         _hasSet ? _formatTime(_selectedHour, _selectedMinute) : '--:--';
