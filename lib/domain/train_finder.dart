@@ -20,18 +20,16 @@ TrainSchedule? findNextTrain(List<TrainSchedule> schedule, DateTime now) {
   return null;
 }
 
-/// [deadline] までに到着できる電車のうち、現在時刻 [now] 以降に発車する最も遅い電車を返す。
-/// 該当なしなら null。発車・到着時刻ちょうどはまだ間に合う扱い。
+/// [deadline] までに到着できる電車のうち、最も遅い電車を返す。
+/// 現在時刻に関係なく、始発から最終までを候補にする(明日のお出かけプラン等の用途)。
+/// 該当なしなら null。到着時刻ちょうどはまだ間に合う扱い。
 TrainSchedule? findLatestArrivalBy(
   List<TrainSchedule> schedule,
   DateTime deadline,
-  DateTime now,
 ) {
   final deadlineMin = _dateTimeToMinutes(deadline);
-  final nowMin = _dateTimeToMinutes(now);
   TrainSchedule? candidate;
   for (final train in schedule) {
-    if (_toMinutes(train.departure) < nowMin) continue;
     if (_toMinutes(train.arrival) > deadlineMin) continue;
     candidate = train;
   }

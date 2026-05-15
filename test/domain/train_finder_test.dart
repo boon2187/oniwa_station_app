@@ -40,36 +40,25 @@ void main() {
 
   group('findLatestArrivalBy', () {
     test('全電車が間に合うなら最終電車を返す', () {
-      final result = findLatestArrivalBy(_fixture, _t(21, 0), _t(5, 0));
+      final result = findLatestArrivalBy(_fixture, _t(21, 0));
       expect(result?.departure, '20:00');
     });
 
     test('間に合う最も遅い電車を返す', () {
       // deadline 07:10 ちょうど → 07:00発(07:10着)は間に合う
-      final result = findLatestArrivalBy(_fixture, _t(7, 10), _t(5, 0));
+      final result = findLatestArrivalBy(_fixture, _t(7, 10));
       expect(result?.departure, '07:00');
     });
 
     test('到着時刻が1分超過する電車は除外する', () {
       // deadline 07:09 → 07:00発(07:10着)は1分超過、よって06:00発が答え
-      final result = findLatestArrivalBy(_fixture, _t(7, 9), _t(5, 0));
+      final result = findLatestArrivalBy(_fixture, _t(7, 9));
       expect(result?.departure, '06:00');
     });
 
-    test('現在時刻時点で発車済みの電車は除外する', () {
-      // 現在 06:30 / deadline 07:10 → 06:00発は除外、07:00発を返す
-      final result = findLatestArrivalBy(_fixture, _t(7, 10), _t(6, 30));
-      expect(result?.departure, '07:00');
-    });
-
-    test('間に合う電車が存在しないなら null', () {
+    test('始発到着より早い deadline なら null', () {
       // deadline 05:00 → 始発が06:10着なので間に合わない
-      final result = findLatestArrivalBy(_fixture, _t(5, 0), _t(4, 0));
-      expect(result, isNull);
-    });
-
-    test('現在時刻が最終発車を過ぎていれば null', () {
-      final result = findLatestArrivalBy(_fixture, _t(23, 0), _t(20, 1));
+      final result = findLatestArrivalBy(_fixture, _t(5, 0));
       expect(result, isNull);
     });
   });
