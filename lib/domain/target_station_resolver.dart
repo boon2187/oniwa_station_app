@@ -16,14 +16,16 @@ double _haversineMeters(double lat1, double lon1, double lat2, double lon2) {
 }
 
 /// 現在地の緯度経度から対象駅を判定する。
+/// 大庭駅は実質自宅判定に絞るため閾値を狭く(既定500m)、松本駅は広め(既定1km)。
 /// 大庭駅をフォールバックとし、以下の場合に大庭駅を返す:
 /// - 緯度経度が null(GPS取得不可)
-/// - 両駅とも [thresholdMeters] より遠い
-/// - 大庭駅と松本駅から等距離
+/// - 大庭駅が [oniwaThresholdMeters] 超 かつ 松本駅が [matsumotoThresholdMeters] 超
+/// - 両駅とも閾値内かつ等距離
 Station resolveTargetStation({
   required double? latitude,
   required double? longitude,
-  double thresholdMeters = 1000,
+  double oniwaThresholdMeters = 500,
+  double matsumotoThresholdMeters = 1000,
 }) {
   if (latitude == null || longitude == null) {
     return Station.oniwa;
@@ -40,8 +42,16 @@ Station resolveTargetStation({
     Station.matsumoto.latitude,
     Station.matsumoto.longitude,
   );
-  if (oniwaDistance > thresholdMeters && matsumotoDistance > thresholdMeters) {
+  final oniwaIn = oniwaDistance <= oniwaThresholdMeters;
+  final matsumotoIn = matsumotoDistance <= matsumotoThresholdMeters;
+  if (!oniwaIn && !matsumotoIn) {
     return Station.oniwa;
+  }
+  if (oniwaIn && !matsumotoIn) {
+    return Station.oniwa;
+  }
+  if (!oniwaIn && matsumotoIn) {
+    return Station.matsumoto;
   }
   if (oniwaDistance <= matsumotoDistance) {
     return Station.oniwa;
