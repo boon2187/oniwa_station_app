@@ -56,6 +56,18 @@ class CurrentStatusScreenState extends State<CurrentStatusScreen> {
     return origin == Station.oniwa ? Station.matsumoto : Station.oniwa;
   }
 
+  void _toggleStation() {
+    final target = _targetStation;
+    if (target == null) return;
+    final other =
+        target == Station.oniwa ? Station.matsumoto : Station.oniwa;
+    final next = findNextTrain(_scheduleFor(other), DateTime.now());
+    setState(() {
+      _targetStation = other;
+      _currentTrain = next;
+    });
+  }
+
   void _showNextTrain() {
     final target = _targetStation;
     final current = _currentTrain;
@@ -117,7 +129,21 @@ class CurrentStatusScreenState extends State<CurrentStatusScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('${target.name}駅', style: theme.textTheme.headlineSmall),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${target.name}駅',
+                      style: theme.textTheme.displaySmall,
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: _toggleStation,
+                      tooltip: '対象駅を切り替える',
+                      icon: const Icon(Icons.swap_horiz),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 32),
                 if (current == null)
                   Text(
